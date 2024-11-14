@@ -7,8 +7,7 @@ import locale
 import numpy as np
 from datetime import datetime, timedelta
 from sklearn.linear_model import LinearRegression
-from st_aggrid import AgGrid, GridOptionsBuilder
-         
+
 
 
 # Configura o título e o ícone da página
@@ -3262,16 +3261,24 @@ def visao_revisao():
                 col1.plotly_chart(fig_barras, use_container_width=True)
                 col1.plotly_chart(fig_sunburst, use_container_width=True)
 
-                # Tabela com dados filtrados
+                # Tabela com dados filtrados e estilo condicional aplicado
                 with col2:
-                    gb = GridOptionsBuilder.from_dataframe(df_correcao_selecao)
-                    gb.configure_pagination(enabled=True)
-                    gb.configure_auto_height()
-                    gb.configure_column("Foi corrigido há (dias)", type=["numericColumn", "numberColumnFilter"], sort="desc",
-                                        cellStyle={'color': 'white', 'backgroundColor': '#2e8b57'})
+                    # Aplicando estilo condicional no DataFrame para a coluna "Foi corrigido há (dias)"
+                    def apply_styles(df):
+                        # Função para aplicar cores com base em valores na coluna "Foi corrigido há (dias)"
+                        styles = pd.DataFrame('', index=df.index, columns=df.columns)
+                        styles['Foi corrigido há (dias)'] = [
+                            'color: white; background-color: #2e8b57;' if val >= 0 else ''
+                            for val in df['Foi corrigido há (dias)']
+                        ]
+                        return styles
 
-                    grid_options = gb.build()
-                    AgGrid(df_correcao_selecao, gridOptions=grid_options, height=1000, width="100%", fit_columns_on_grid_load=True)
+                    # Aplicar o estilo condicional no DataFrame
+                    styled_df = df_correcao_selecao.style.apply(apply_styles, axis=None)
+                    
+                    # Exibir a tabela com altura e largura ajustadas
+                    st.dataframe(styled_df, height=500, width=1000, use_container_width=True)
+
             else:
                 st.warning("Não há dados para correções.")
 
