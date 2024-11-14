@@ -4,3 +4,6 @@ numpy
 scikit-learn
 st-aggrid
 plotly==5.3.1
+yfinance
+pandas-datareader
+prophet
