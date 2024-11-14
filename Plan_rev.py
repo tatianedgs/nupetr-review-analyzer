@@ -41,9 +41,9 @@ with st.sidebar:
     # Explicação sobre a aplicação, com formato mais compacto e link centralizado
     st.sidebar.markdown('<h3 style="text-align: center; color: #388E3C;">Sobre o Sistema</h3>', unsafe_allow_html=True)
     st.sidebar.markdown("""
-        <sub><sup><sup>Desenvolvido por Tatiane Santos ([LinkedIn](https://www.linkedin.com/in/tatiane-santos-31b79938))<br>
-        <sup><sup>Código fonte disponível [aqui](https://github.com)<br>
-        <sup><sup><strong>Obs:</strong> Sistema de Prova de Conceito, pode conter erros.
+        <sub>Desenvolvido por Tatiane Santos ([LinkedIn](https://www.linkedin.com/in/tatiane-santos-31b79938))<br>
+        <sup>Código fonte disponível [aqui](https://github.com)<br>
+        <sup><strong>Obs:</strong> Sistema de Prova de Conceito, pode conter erros.
     """, unsafe_allow_html=True)
 
     # Explicação sobre a base de dados (texto resumido e com estilo verde)
@@ -638,7 +638,13 @@ def visao_global():
             df_selection['Tipo de Processo'] = df_selection['Número do Processo a ser revisado (Caso seja Reenvio, coloque a Inicial do revisor-CORRIGIDO-NúmeroDoProcesso)'].apply(extrair_tipo_processo)
 
             import locale
-            locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')  # Definindo o idioma para exibir o mês em português
+
+            # Tentar configurar a localidade para português
+            try:
+                locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
+            except locale.Error:
+                # Se a localidade não estiver disponível, usar o padrão do sistema
+                locale.setlocale(locale.LC_TIME, '')
 
             # Separador visual entre seções
             st.markdown("<hr style='border: 1px solid #ccc; margin-top: 20px; margin-bottom: 20px;'>", unsafe_allow_html=True)
