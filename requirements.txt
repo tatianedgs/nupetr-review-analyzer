@@ -1,6 +1,6 @@
 streamlit
 pandas
-plotly
 numpy
 scikit-learn
 st-aggrid
+plotly==5.3.1
