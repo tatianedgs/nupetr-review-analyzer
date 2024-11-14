@@ -1739,45 +1739,40 @@ def visao_analista():
                         with colunas[coluna_atual]:  # Coluna atual para o analista
                             # Cria uma caixa para agrupar os gráficos do analista
                             st.markdown(f"<div style='border: 1px solid #3CB371; padding: 10px; border-radius: 5px;'>", unsafe_allow_html=True)
+                            
+                            # Título do analista com cor verde
                             st.markdown(f"<h4 style='text-align: center; color: #3CB371;'>{analista}</h4>", unsafe_allow_html=True)
 
-                            # Filtrar dados para cada tipo de envio do analista atual
+                            # Filtra dados para o analista
                             df_analista = df_analista_envio[df_analista_envio['Analista (você)'] == analista]
 
+                            # Função para exibir o gráfico com valores padrão se os dados estiverem vazios
+                            def exibir_grafico(tipo_envio):
+                                df_tipo_envio = df_analista[df_analista['Qual o tipo de envio?'] == tipo_envio]
+                                if not df_tipo_envio.empty:
+                                    proporcao = df_tipo_envio['Proporção (%)'].values[0]
+                                    total = df_tipo_envio['Quantidade'].values[0]
+                                    st.plotly_chart(gerar_grafico_velocidade(tipo_envio, proporcao, total), use_container_width=True)
+                                else:
+                                    st.plotly_chart(gerar_grafico_velocidade(tipo_envio, 0, 0), use_container_width=True)
+
                             # Gráfico de 1º Envio
-                            df_envio = df_analista[df_analista['Qual o tipo de envio?'] == '1º Envio']
-                            if not df_envio.empty:
-                                proporcao = df_envio['Proporção (%)'].values[0]
-                                total = df_envio['Quantidade'].values[0]
-                                st.plotly_chart(gerar_grafico_velocidade('1º Envio', proporcao, total), use_container_width=True)
-                            else:
-                                st.plotly_chart(gerar_grafico_velocidade('1º Envio', 0, 0), use_container_width=True)
+                            exibir_grafico('1º Envio')
 
                             # Gráfico de Prioridades
-                            df_prioridade = df_analista[df_analista['Qual o tipo de envio?'] == 'Prioridades']
-                            if not df_prioridade.empty:
-                                proporcao = df_prioridade['Proporção (%)'].values[0]
-                                total = df_prioridade['Quantidade'].values[0]
-                                st.plotly_chart(gerar_grafico_velocidade('Prioridades', proporcao, total), use_container_width=True)
-                            else:
-                                st.plotly_chart(gerar_grafico_velocidade('Prioridades', 0, 0), use_container_width=True)
+                            exibir_grafico('Prioridades')
 
                             # Gráfico de Reenvios
-                            df_reenvio = df_analista[df_analista['Qual o tipo de envio?'] == 'Reenvios']
-                            if not df_reenvio.empty:
-                                proporcao = df_reenvio['Proporção (%)'].values[0]
-                                total = df_reenvio['Quantidade'].values[0]
-                                st.plotly_chart(gerar_grafico_velocidade('Reenvios', proporcao, total), use_container_width=True)
-                            else:
-                                st.plotly_chart(gerar_grafico_velocidade('Reenvios', 0, 0), use_container_width=True)
+                            exibir_grafico('Reenvios')
 
                             # Fecha a caixa do analista
                             st.markdown("</div>", unsafe_allow_html=True)
 
                         # Alterna para a próxima coluna ou volta à primeira
                         coluna_atual = (coluna_atual + 1) % num_colunas
-                else:
-                    st.write("Dados de envios por analista não disponíveis.")
+                    else:
+                        st.write("Dados de envios por analista não disponíveis.")
+
 
 
             # Espaçador ou linha de separação entre seções
